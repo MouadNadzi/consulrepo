@@ -8,35 +8,31 @@ pipeline {
     stages {
     stage('Checkout') {
                 steps {
-                                cleanWs()
-
-                    checkout scm // This checks out from the SCM configured in the job
+                    // Clean workspace before checkout
+                    cleanWs()
+                    // Simple checkout for public repository
+                    git url: 'https://github.com/MouadNadzi/consulrepo.git', branch: 'main'
                 }
             }
 
-        stage('Test Docker') {
-            steps {
-                script {
-                                    sh '''
-                                        # Test Docker installation using full path (if needed)
-                                        #ls -l /usr/bin/docker
-                                        whoami
-                                        ps aux | grep jenkins
-                                        echo "Testing Docker installation..."
-                                        docker --version
+            stage('Test Docker') {
+                steps {
+                    script {
+                        sh '''
+                            echo "Testing Docker installation..."
+                            docker --version
 
+                            # List current Docker images
+                            echo "\nListing Docker images..."
+                            docker images
 
-                                        # List current Docker images
-                                        echo "\nListing Docker images..."
-                                        docker images
-
-                                        # List running containers
-                                        echo "\nListing running containers..."
-                                        docker ps
-                                    '''
-                                }
+                            # List running containers
+                            echo "\nListing running containers..."
+                            docker ps
+                        '''
+                    }
+                }
             }
-        }
 
         stage('Deploy Services') {
             steps {
