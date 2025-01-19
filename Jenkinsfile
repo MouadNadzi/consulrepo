@@ -17,15 +17,15 @@ pipeline {
                                         ps aux | grep jenkins
                                         echo "Testing Docker installation..."
                                         docker --version
-                                        sudo /usr/bin/docker --version
+
 
                                         # List current Docker images
                                         echo "\nListing Docker images..."
-                                        sudo /usr/bin/docker images
+                                        docker images
 
                                         # List running containers
                                         echo "\nListing running containers..."
-                                        sudo /usr/bin/docker ps
+                                        docker ps
                                     '''
                                 }
             }
