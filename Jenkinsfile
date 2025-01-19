@@ -6,6 +6,11 @@ pipeline {
     }
 
     stages {
+    stage('Checkout') {
+                steps {
+                    checkout scm // This checks out from the SCM configured in the job
+                }
+            }
 
         stage('Test Docker') {
             steps {
