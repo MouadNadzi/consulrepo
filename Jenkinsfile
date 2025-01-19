@@ -14,6 +14,7 @@ pipeline {
                                         # Test Docker installation using full path (if needed)
                                         #ls -l /usr/bin/docker
                                         echo "Testing Docker installation..."
+                                        docker --version
                                         sudo /usr/bin/docker --version
 
                                         # List current Docker images
