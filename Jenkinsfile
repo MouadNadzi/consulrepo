@@ -2,27 +2,35 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME = "ms_rest_template"  // Matching your current image prefix
+        APP_NAME = "ms_rest_template"
     }
 
     stages {
+
         stage('Test Docker') {
                     steps {
                         script {
-                            powershell '''
-                                # Test Docker access
+                            sh '''
+                                # Test Docker installation
+                                echo "Testing Docker installation..."
                                 docker --version
-                                # List current containers
+
+                                # List current Docker images
+                                echo "\nListing Docker images..."
+                                docker images
+
+                                # List running containers
+                                echo "\nListing running containers..."
                                 docker ps
                             '''
                         }
                     }
-        }
+                }
         stage('Build and Deploy') {
             steps {
                 script {
-                    // Using PowerShell to execute Docker commands
-                    powershell '''
+                    // Using sh for Linux-based Jenkins container
+                    sh '''
                         # Build services
                         docker-compose build gateway-service client-service car-service
 
@@ -39,7 +47,7 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    powershell '''
+                    sh '''
                         # Check if containers are running
                         docker ps --format "table {{.Names}}\t{{.Status}}"
                     '''
