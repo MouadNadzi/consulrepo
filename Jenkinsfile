@@ -10,20 +10,20 @@ pipeline {
         stage('Test Docker') {
             steps {
                 script {
-                    sh '''
-                        # Test Docker installation
-                        echo "Testing Docker installation..."
-                        docker --version
+                                    sh '''
+                                        # Test Docker installation using full path (if needed)
+                                        echo "Testing Docker installation..."
+                                        /usr/bin/docker --version
 
-                        # List current Docker images
-                        echo "\nListing Docker images..."
-                        docker images
+                                        # List current Docker images
+                                        echo "\nListing Docker images..."
+                                        /usr/bin/docker images
 
-                        # List running containers
-                        echo "\nListing running containers..."
-                        docker ps
-                    '''
-                }
+                                        # List running containers
+                                        echo "\nListing running containers..."
+                                        /usr/bin/docker ps
+                                    '''
+                                }
             }
         }
 
