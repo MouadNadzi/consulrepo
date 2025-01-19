@@ -3,11 +3,33 @@ server:
 
 spring:
   application:
-    name: Gateway
+    name: gateway-service    # Changed from Gateway to gateway-service
   cloud:
-    discovery:
-      enabled: true
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: client-service-route
+          uri: lb://service-client
+          predicates:
+            - Path=/api/client/**
+        - id: car-service-route
+          uri: lb://service-car
+          predicates:
+            - Path=/api/car/**, /api/performance/**
 
-eureka:
-  instance:
-    hostname: localhost
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

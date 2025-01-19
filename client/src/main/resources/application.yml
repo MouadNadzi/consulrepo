@@ -3,13 +3,29 @@ server:
 
 spring:
   application:
-    name: SERVICE-CLIENT
+    name: service-client
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        register: true
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/clientservicedb?createDatabaseIfNotExist=true
-    username: "root"
+    driver-class-name: org.postgresql.Driver  # Correct PostgreSQL driver
+    url: jdbc:postgresql://localhost:5432/clientservicedb?createDatabaseIfNotExist=true
+    username: "postgres"
     password: ""
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

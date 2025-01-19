@@ -1,0 +1,105 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-container
+    environment:
+      POSTGRES_PASSWORD: root # Change this in production!
+      POSTGRES_USER: root
+      POSTGRES_DB: microservices_db # You can create separate DBs if needed
+    ports:
+      - "5432:5432"
+    networks:
+      - microservices-network
+
+  consul:
+    image: consul:1.15.4
+    container_name: consul-container
+    ports:
+      - "8500:8500"
+    networks:
+      - microservices-network
+
+  gateway-service:
+    build:
+      context: ./gateway
+    container_name: gateway-service
+    ports:
+      - "8888:8888"
+    depends_on:
+      - postgres
+      - consul
+    networks:
+      - microservices-network
+    environment:
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_DISCOVERY_ENABLED: 'true'
+
+  client-service:
+    build:
+      context: ./client
+    container_name: client-service
+    ports:
+      - "8088:8088"
+    depends_on:
+      - postgres
+      - consul
+      - gateway-service
+    networks:
+      - microservices-network
+    environment:
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_DISCOVERY_ENABLED: 'true'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/microservices_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d microservices_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  car-service:
+    build:
+      context: ./car
+    container_name: car-service
+    ports:
+      - "8089:8089"
+    depends_on:
+      - postgres
+      - consul
+      - gateway-service
+    networks:
+      - microservices-network
+    environment:
+      SPRING_CLOUD_CONSUL_HOST: consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      SPRING_CLOUD_DISCOVERY_ENABLED: 'true'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/microservices_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U root -d microservices_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com # Change this!
+      PGADMIN_DEFAULT_PASSWORD: admin # Change this in production!
+    ports:
+      - "8082:80"
+    depends_on:
+      - postgres
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge
