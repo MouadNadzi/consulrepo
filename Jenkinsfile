@@ -6,33 +6,30 @@ pipeline {
     }
 
     stages {
-    stage('Checkout') {
-                steps {
-                    // Clean workspace before checkout
-                    cleanWs()
-                    // Simple checkout for public repository
-                    git url: 'https://github.com/MouadNadzi/consulrepo.git', branch: 'main'
-                }
+
+        stage('Test Docker') {
+            steps {
+                script {
+                                    sh '''
+                                        # Test Docker installation using full path (if needed)
+                                        #ls -l /usr/bin/docker
+                                        whoami
+                                        ps aux | grep jenkins
+                                        echo "Testing Docker installation..."
+                                        docker --version
+                                        sudo /usr/bin/docker --version
+
+                                        # List current Docker images
+                                        echo "\nListing Docker images..."
+                                        sudo /usr/bin/docker images
+
+                                        # List running containers
+                                        echo "\nListing running containers..."
+                                        sudo /usr/bin/docker ps
+                                    '''
+                                }
             }
-
-            stage('Test Docker') {
-                steps {
-                    script {
-                        sh '''
-                            echo "Testing Docker installation..."
-                            docker --version
-
-                            # List current Docker images
-                            echo "\nListing Docker images..."
-                            docker images
-
-                            # List running containers
-                            echo "\nListing running containers..."
-                            docker ps
-                        '''
-                    }
-                }
-            }
+        }
 
         stage('Deploy Services') {
             steps {
