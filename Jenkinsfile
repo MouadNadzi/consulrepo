@@ -12,16 +12,17 @@ pipeline {
                 script {
                                     sh '''
                                         # Test Docker installation using full path (if needed)
+                                        ls -l /usr/bin/docker
                                         echo "Testing Docker installation..."
-                                        /usr/bin/docker --version
+                                        sudo /usr/bin/docker --version
 
                                         # List current Docker images
                                         echo "\nListing Docker images..."
-                                        /usr/bin/docker images
+                                        sudo /usr/bin/docker images
 
                                         # List running containers
                                         echo "\nListing running containers..."
-                                        /usr/bin/docker ps
+                                        sudo /usr/bin/docker ps
                                     '''
                                 }
             }
