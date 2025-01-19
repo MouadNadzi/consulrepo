@@ -6,6 +6,18 @@ pipeline {
     }
 
     stages {
+        stage('Test Docker') {
+                    steps {
+                        script {
+                            powershell '''
+                                # Test Docker access
+                                docker --version
+                                # List current containers
+                                docker ps
+                            '''
+                        }
+                    }
+        }
         stage('Build and Deploy') {
             steps {
                 script {
