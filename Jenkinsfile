@@ -13,6 +13,7 @@ pipeline {
                                     sh '''
                                         # Test Docker installation using full path (if needed)
                                         #ls -l /usr/bin/docker
+                                        ps aux | grep jenkins
                                         echo "Testing Docker installation..."
                                         docker --version
                                         sudo /usr/bin/docker --version
