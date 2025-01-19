@@ -12,7 +12,7 @@ pipeline {
                 script {
                                     sh '''
                                         # Test Docker installation using full path (if needed)
-                                        ls -l /usr/bin/docker
+                                        #ls -l /usr/bin/docker
                                         echo "Testing Docker installation..."
                                         sudo /usr/bin/docker --version
 
