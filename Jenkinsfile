@@ -8,6 +8,8 @@ pipeline {
     stages {
     stage('Checkout') {
                 steps {
+                                cleanWs()
+
                     checkout scm // This checks out from the SCM configured in the job
                 }
             }
